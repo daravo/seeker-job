@@ -1,0 +1,27 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+<style>
+    img{
+        width:50%;
+    }
+    h3{
+        align: center;
+    }
+</style>
+
+
+<h1 class="mb-4">Registro</h1>
+<a href="{% url 'registro_empresa' %}" class="text-dark text-decoration-none">
+<div class="border my-3">
+    <h3 class="m-3 text-center">¿Quieres registrarte como una empresa?</h3>
+    <img class="m-3 mx-auto d-block" src="https://www.caracteristicas.co/wp-content/uploads/2017/02/empresa-e1561419311342-800x400.jpg">
+</div>
+</a>
+<a href="{% url 'registro_usuario' %}" class="text-dark text-decoration-none">
+<div class="border my-3">
+    <h3 class="m-3 text-center">¿O como un usuario en busca de empleo?</h3>
+    <img class="m-3 mx-auto d-block" src="https://blogs.elespectador.com/wp-content/uploads/2015/10/Buscotrabajo.png">
+</div>
+</a>
+{% endblock %}

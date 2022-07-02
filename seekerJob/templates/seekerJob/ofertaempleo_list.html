@@ -1,0 +1,54 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+<style>
+  .step-links{
+    margin: 1.2rem 35%;
+    
+}
+  .oferta{
+    width: 70%;
+  }
+  #filtro{
+    width:15%;
+    
+  }
+  
+  #filtro>label, #filtro>select{
+    margin:5px;
+  }
+  
+</style>
+
+    <h1>Ofertas de Empleo {{filter.qs.count}}</h1>
+   
+      <form action="" method="get" id="filtro" class=" pe-5 d-flex position-absolute end-0 flex-column me-5 text-center" >
+        {{filter.form}}
+        <input type="submit" value="Buscar">
+      </form>
+   
+  
+    
+
+    {% if filter.qs %}
+    
+
+      {% for oferta in filter.qs %}
+     
+      <div class="border oferta  p-4 m-3">
+        <a href="{{ oferta.get_absolute_url }}" class="  text-decoration-none text-dark ">
+        <b class=""> {{oferta.EmpresaSolicitante}}</b>
+       <p> {{oferta.Titulo}}</p> 
+        <p> {{oferta.Descripcion}}</p> 
+          <p class="text-right">  {{oferta.UltimoDiaInscripcion}}</p> 
+        </a >
+        </div>
+     
+      {% endfor %}
+    
+
+    {% else %}
+      <p>No hay ofertas de empleo.</p>
+    {% endif %}
+    
+{% endblock %}

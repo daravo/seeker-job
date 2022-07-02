@@ -1,0 +1,105 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+<div class="container p-2 m-0">
+    <div class="row ">
+        <div class="col-1 p-0">
+            <img src="{{usuario.Foto.url}}" class="img-circle" width="90px" height="85px"> 
+                    </div>
+        <div class="col">
+    <h1 >Usuario: {{usuario.login}} </h1>
+    <h2 >Nombre: {{usuario.nombre}} </h2>
+    <h2 >Apellidos: {{usuario.apellido}} </h2>
+
+        </div >
+        <p class="fs-3 my-5"><strong>Fecha Nacimiento:</strong> {{ usuario.anioNacimiento }}</p>
+
+
+    
+    </div>
+</div>
+    {% if request.user == usuario.login %}
+    <h3>Modificar Perfil</h3>
+    <a href="{{ usuario.get_absolute_url }}modificarUsuario" class="btn btn-success my-3 fs-4">Modificar Perfil</a>
+    {% endif %}
+
+    {% if request.user != usuario.login %} 
+    <h3 >Empezar conversacion con este Usuario </h3>
+    <a class="btn btn-success fs-4 my-3" href="/seekerJob/ms/{{usuario.login}}">Empezar conversacion</a>
+    
+    {% endif %} 
+<div class="my-5">
+    <h1>Informacion Academica</h1>
+    <h2>Titulos</h2>
+    {% if titulos %}
+    {% for titulo in titulos %}
+    {% if request.user == usuario.login %}
+    <p >{{titulo.Titulo}} {{titulo.FechaInicio}} - {{titulo.FechaFinFinal}}<a href="{{titulo.get_absolute_url}}/changeTitulo" class="btn btn-success my-3 fs-4">cambiar titulo</a> <a href="{{titulo.get_absolute_url}}/BorrarTitulo" class="btn btn-success my-3 fs-4">Eliminar titulo</a></p>
+    {% else %}
+    <p >{{titulo.Titulo}} {{titulo.FechaInicio}} - {{titulo.FechaFinFinal}}</p>
+    {% endif %}
+   
+    {% endfor %}
+    {% if request.user == usuario.login %}
+    <a href="{% url 'creartitulo' %}" class="btn btn-success my-3 fs-4">Añadir titulo</a>
+    {% endif %}
+    {% else %}
+    <p >Este Usuario no hay Especificado ningun de los que tiene</p>
+    {% if request.user == usuario.login %}
+    <a href="{% url 'creartitulo' %}" class="btn btn-success my-3 fs-4">Añadir titulo</a>
+    {% endif %}
+    {% endif %}
+
+
+    <h2>Idiomas</h2>
+    {% if idiomas %}
+    <ol >
+    {% for idioma in idiomas %}
+    {% if request.user == usuario.login %}
+    <li >{{idioma.Idioma}} {{idioma.nivel}}  <a href="{{idioma.get_absolute_url}}/changeIdioma" class="btn btn-success my-3 fs-4">cambiar idioma</a> <a href="{{idioma.get_absolute_url}}/BorrarIdioma" class="btn btn-success my-3 fs-4">borrar idioma</a></li>
+    {% else %}
+    <li >{{idioma.Idioma}} {{idioma.nivel}} </li>
+    {% endif %}
+    {% endfor %}
+</ol >
+    {% if request.user == usuario.login %}
+    <a href="{% url 'crearIdioma' %}" class="btn btn-success my-3 fs-4">Añadir Idioma</a>
+    {% endif %}
+    {% else %}
+    <p >Este Usuario no hay Especificado ningun de los que tiene</p>
+    {% if request.user == usuario.login %}
+    <a href="{% url 'crearIdioma' %}" class="btn btn-success my-3 fs-4">Añadir Idioma</a>
+    {% endif %}
+    {% endif %}
+
+    <h2>Experiencia Laboral</h2>
+    {% if experiencia %}
+    {% for exp in experiencia %}
+    {% if request.user == usuario.login %}
+    <p >{{exp.Puesto}} {{exp.FechaInicio}} - {{exp.FechaFin}}  <a href="{{exp.get_absolute_url}}/changeExperiencia" class="btn btn-success my-3 fs-4">cambiar Experiencia Laboral</a> <a href="{{exp.get_absolute_url}}/BorrarExperiencia" class="btn btn-success my-3 fs-4">Eliminar Experiencia Laboral</a></p >
+    {% else %}
+    <p >{{exp.Puesto}} {{exp.FechaInicio}} - {{exp.FechaFin}}  </p >
+    {% endif %}
+    
+    {% endfor %}
+    {% if request.user == usuario.login %}
+    <a href="{% url 'crearExperienciaLaboral' %}" class="btn btn-success my-3 fs-4">Añadir Experiencia Laboral</a>
+    {% endif %}
+    {% else %}
+    <p >Este Usuario no hay Especificado ningun de los que tiene</p>
+    {% if request.user == usuario.login %}
+    <a href="{% url 'crearExperienciaLaboral' %}" class="btn btn-success my-3 fs-4">Añadir Experiencia Laboral</a>
+    {% endif %}
+    {% endif %}
+</div>
+{% if request.user != usuario.login %}
+    {% if request.user.is_staff  or request.user.is_superuser %}
+
+    <h2 class="m-5 ms-0">Eliminar este Usuario</h2>
+    <a class="btn btn-success my-3 fs-4" href="{{ usuario.get_absolute_url }}borrarUsuario">Eliminar Usuario</a>
+    {% endif %}
+    {% endif %}
+    
+   
+
+{% endblock %}

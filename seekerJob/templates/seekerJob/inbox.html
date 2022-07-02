@@ -1,0 +1,72 @@
+{% extends "base_generic.html" %}
+
+{% load groups_tags %}  
+{% block content %}
+<h1 class="my-3">Bienvenido {{user}}</h1>
+
+{% for inbox in inbox%}
+<div class="div_inbox card mx-auto my-5 px-3 py-3" >
+ 
+{% for second_user in inbox.canalusuario_set.all%}
+{% if second_user.usuario == request.user %}
+
+{% else %}
+
+<a href="{% url 'detailms' second_user.usuario.username %}" class="text-decoration-none">
+    
+   
+    {% if "Empresas" == second_user.usuario.groups.all.0.name %}
+    
+    {% with second_user.usuario.empresa_set.all|first as empresa %}
+    <div class="container p-0 m-0" >
+        <div class="row" >
+            <div class="col" >
+    <p> Conversacion con {{second_user.usuario}} {{empresa.nombre_empresa}} </p>
+</div>
+<div class="col-1" >
+<img src="{{empresa.Foto.url}}" class="img-circle" width="60px" height="55px">
+</div>
+</div>
+</div>
+    {% endwith %}
+    {% elif "Usuarios" == second_user.usuario.groups.all.0.name %}
+    {% with second_user.usuario.usuario_set.all|first as usuario %}
+    <div class="container p-0" >
+        <div class="row" >
+            <div class="col" >
+    <p> Conversacion con {{second_user.usuario}} {{usuario.nombre}} {{usuario.apellido}}  </p>
+</div>
+<div class="col-1" >
+    <img src="{{usuario.Foto.url}}" class="img-circle" width="60px" height="55px">
+</div>
+</div>
+</div>
+    {% endwith %}
+    {% else %}
+    <p> Conversacion con {{second_user.usuario}} </p>
+    
+    {% endif %}
+
+    <small> ({{inbox.canalmensaje_set.count}}) Mensajes</small>
+</a>
+{% endif %}
+
+{% endfor %}
+{% if inbox.canalmensaje_set.count != 0 %}
+<div class="div_ms_inbox card-body">
+    
+    {% with ultimo_mensaje=inbox.canalmensaje_set.last %}
+    <p> Mensaje: {{ ultimo_mensaje.texto}}</p>
+    
+    <p> Usuario: {{ultimo_mensaje.usuario}} </p>
+    {% endwith %}
+</div>
+{% else %}
+    <p> No hay mensajes en nuestro inbox</p>
+{% endif %}
+</div>
+
+{% empty %}
+<h1>Inbox vacio</h1>
+{% endfor %}
+{% endblock %}

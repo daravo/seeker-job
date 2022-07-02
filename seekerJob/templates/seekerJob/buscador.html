@@ -1,0 +1,43 @@
+{% extends "base_generic.html" %}
+{% block content %}
+{% load groups_tags %}
+{% if resultado %}
+
+    
+<h1>Has buscado {{resultado}}</h1>
+{% if  usuarios.count == 0 and empresas.count == 0 and ofertas.count == 0 %}
+<h1>No se ha encontrado nada</h1>
+{% else %}
+<h3>Ofertas de Empleo</h3>
+{% for oferta in  ofertas %}
+
+<a href="{{oferta.get_absolute_url}}" class="text-decoration-none text-success">
+<p>{{oferta}}</p>
+</a>
+{% endfor %}
+{% if  request.user|has_group:"Empresas" or  request.user|has_group:"Administradores" or request.user|has_group:"Moderadores" %}
+<h3>Empresas</h3>
+{% for empresa in  empresas %}
+<a href="{{empresa.get_absolute_url}}" class="text-decoration-none text-success">
+<p>{{empresa}}</p>
+</a>
+{% endfor %}
+{% endif %}
+<h3>Usuarios</h3>
+{% for usuario in  usuarios %}
+<a href="{{usuario.get_absolute_url}}" class="text-decoration-none text-success">
+
+<p>{{usuario}}</p>
+</a>
+{% endfor %}
+
+
+{% endif %}
+
+{% else %}
+<h1>nada</h1>
+{% endif %}
+
+
+
+{% endblock %}

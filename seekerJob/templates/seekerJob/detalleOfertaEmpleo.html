@@ -1,0 +1,89 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+
+
+  <h1 class="m-3 ms-0">Titulo: {{ ofertaempleo.Titulo}}</h1>
+
+  <h3 class="m-3 ms-0"><strong>Empresa:</strong> <a class="text-decoration-none text-success" href="{{ ofertaempleo.EmpresaSolicitante.get_absolute_url}}">{{ ofertaempleo.EmpresaSolicitante }}</a></h3> 
+  <h3 class="m-3 ms-0"><strong>Ultimo dia para Inscribirse: {{ ofertaempleo.UltimoDiaInscripcion}}</strong> </h3> 
+  
+
+
+  <h1 class="m-5 ms-0">Datos de la Oferta</h1>
+
+  <h3 class="m-3 ms-0">Presencialidad: {{ofertaempleo.Presencialidad}}</h3>
+  <h3 class="m-3 ms-0">Estudios: {{ofertaempleo.Estudios}}</h3>
+  <h3 class="m-3 ms-0">Jornada: {{ofertaempleo.Jornada}}</h3>
+  <h3 class="m-3 ms-0">Puesto: {{ofertaempleo.Puesto}}</h3>
+  <h3 class="m-3 ms-0">Contrato: {{ofertaempleo.Contrato}}</h3>
+
+
+
+  <h2 class="m-5 ms-0">Candidatos: {{ ofertaempleo.Candidatos.count}}</h2>
+  <div  class="d-flex flex-wrap p-1">
+
+
+
+    {% if request.user == ofertaempleo.EmpresaSolicitante.login %}
+   
+  {% for i in ofertaempleo.Candidatos.all %}
+
+  <div class="border p-2" >
+      
+    <a class="text-decoration-none text-success m-2 ms-0" href="{{ i.get_absolute_url}}">
+      <div class="container" >
+        <div class="row" >
+          <div class="col" >
+  <p >{{ i.login }}  </p>  
+</div >
+<div class="col-1 mx-2" >
+  <img src="{{i.Foto.url}}" class="img-circle" width="30px" height="30px"> 
+      </div >
+    </div >
+    </div >
+  <a class="btn btn-success my-3 fs-4" href="{{ ofertaempleo.get_absolute_url }}/{{ i.login.id}}/cancelarcandidatura">
+    <p >Cancenlar la candidatura de este Usuario </p>  
+  </a>
+</a>
+</div  >
+
+  {% endfor %}
+  
+  {% endif %}
+</div>
+
+{% if ofertaempleo.Inscripcion %}
+{% if request.user.groups.all.0.name == "Usuarios" %}
+  {% with request.user.usuario_set.all|first as usuario %}
+  {% if usuario in ofertaempleo.Candidatos.all %}
+  <h3 class="m-3 ms-0">Estas Inscrito en esta oferta de empleo</h3>
+  
+  <a class="btn btn-success my-3 fs-4" href="{{ ofertaempleo.get_absolute_url }}/cancelarcandidatura">Cancelar candidatura</a>
+  {% else %}
+  <h3 class="m-3 ms-0">No Estas Inscrito en esta oferta de empleo</h3>
+  
+  {% if "Usuarios" == request.user.groups.all.0.name %}
+  <h3 class="m-3 ms-0">Aplicar como candidato</h3>
+  <a class="btn btn-success my-3 fs-4" href="{{ ofertaempleo.get_absolute_url }}/aplicar_candidato">Aplicar candidatura</a>
+  {% endif %}
+  {% endif %}
+  {% endwith %}
+  {% endif %}
+  {% else %}
+  <h3 class="m-3 ms-0">El tiempo para inscribirse en esta oferta de empleo ya termino</h3>
+  {% endif %}
+
+
+  {% if request.user == ofertaempleo.EmpresaSolicitante.login %}
+  <h3 class="m-3 ms-0">Modificar</h3>
+  <a class="btn btn-success my-3 fs-4"  href="{{ ofertaempleo.get_absolute_url }}/modificarOferta">Modificar</a>
+  {% endif %}
+ 
+  {% if request.user.is_staff  or request.user.is_superuser %}
+
+<h2 class="m-5 ms-0">Eliminar esta Oferta de empleo</h2>
+<a class="btn btn-success my-3 fs-4" href="{{ ofertaempleo.get_absolute_url }}/borrarOferta">Eliminar Oferta de empleo</a>
+{% endif %}
+  
+{% endblock %}

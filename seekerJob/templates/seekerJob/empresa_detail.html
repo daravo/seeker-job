@@ -1,0 +1,60 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+<style>
+    .ofertas{
+        width:30%;
+        
+    }
+</style>
+<div class="container p-2 m-0">
+    <div class="row ">
+        <div class="col-1 p-0">
+            <img src="{{empresa.Foto.url}}" class="img-circle" width="90px" height="85px"> 
+                    </div>
+        <div class="col">
+            <h1 >Empresa: {{empresa.nombre_empresa}} </h1>
+            <h2 >Usuario: {{empresa.login}} </h2>
+
+        </div >
+    </div >
+
+</div >
+    <p class="fs-3 my-5"><strong>Numero de contacto:</strong> {{ empresa.telefono }}</p>
+    <p class="fs-3 my-5"><strong>Correo de contacto:</strong> {% if empresa.email == "" %} No hay correo registrado de esta empresa 
+        {% else %}{{ empresa.email }}{% endif %}</p>
+
+        {% if request.user != empresa.login %} 
+    <h3 >Empezar conversacion con esta empresa </h3>
+    <a class="btn btn-success fs-4 my-3" href="/seekerJob/ms/{{empresa.login}}">Empezar conversacion</a>
+ 
+    {% endif %} 
+    {% if request.user == empresa.login %}
+    
+  <h3>Modificar Perfil</h3>
+  <a href="{{ empresa.get_absolute_url }}modificarEmpresa" class="btn btn-success my-3 fs-4">Modificar Perfil</a>
+  {% endif %}
+    
+
+    <h3 >Ofertas de empleo </h3>
+    <div  class="d-flex flex-wrap">
+    {% for oferta in oferta  %}
+    <div class="border ofertas border-dark m-3 ms-0 p-3"> 
+    <h3 >Titulo del trabajo: {{oferta.Titulo}}</h3>
+    <p>Descripcion del trabajo: {{oferta.Descripcion}}</p>
+    <p>Ultimo dia de inscripcion: {{oferta.UltimoDiaInscripcion}}</p>
+    <a class="btn btn-success fs-4 my-3" href="{{ oferta.get_absolute_url }}">Ver en mas detalle</a>
+    </div>
+    {% endfor  %}
+
+
+</div>
+{% if request.user != empresa.login %}
+{% if request.user.is_staff  or request.user.is_superuser %}
+
+<h2 class="m-5 ms-0">Eliminar esta Empresa</h2>
+<a class="btn btn-success my-3 fs-4" href="{{ empresa.get_absolute_url }}borrarEmpresa">Eliminar esta Empresa</a>
+{% endif %}
+{% endif %}
+
+{% endblock %}

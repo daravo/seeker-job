@@ -1,0 +1,54 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+<style>
+  .step-links{
+    margin: 1.2rem 35%;
+    
+}
+  .oferta{
+    width: 70%;
+  }
+  
+</style>
+    <h1>Mis Ofertas de Empleo</h1>
+
+    {% if ofertaempleo_list %}
+    
+
+      {% for oferta in ofertaempleo_list %}
+      
+      <div class="border oferta p-4 m-3">
+        <a href="{{ oferta.get_absolute_url }}" class="text-decoration-none text-dark ">
+        <b class=""> {{oferta.EmpresaSolicitante}}</b>
+       <p> {{oferta.Titulo}} </p> 
+        <p> {{oferta.Descripcion}}</p> 
+          <p class="text-right">  {{oferta.UltimoDiaInscripcion}}</p> 
+        </a >
+        </div>
+      
+      {% endfor %}
+    
+
+    {% else %}
+      <p>No hay ofertas de empleo.</p>
+    {% endif %}
+
+
+    <div class="pagination ">
+      <span class="step-links mb-5 ">
+          {% if page_obj.has_previous %}
+          <a href="?page=1"> Primera</a>
+          <a href="?page={{ page_obj.previous_page_number }}"> Anterior</a>
+          {% endif %}
+      
+      <span class="current">
+          Pagina {{ page_obj.number }} hasta {{ page_obj.paginator.num_pages }}
+      </span>
+      {% if page_obj.has_next %}
+          <a href="?page={{ page_obj.next_page_number }}"> Siguiente</a>
+          <a href="?page={{ page_obj.paginator.num_pages }}"> Ultima</a>
+          {% endif %}
+      </span>
+  </div>
+{% endblock %}

@@ -1,0 +1,63 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+<style>
+  .step-links{
+    margin: 1.2rem 35%;
+    
+}
+    .usu{
+      width: 70%;
+    }
+    
+</style>
+    <h1>Usuarios registrados</h1>
+
+    {% if usuario_list %}
+    <ul class="p-0">
+
+      {% for usuario in usuario_list %}
+      <div  class="usu p-3 m-2">
+      <a href="{{usuario.get_absolute_url}}" class="text-decoration-none text-dark">
+      <div  class="border container py-3">
+        <div  class="row">
+        <div  class="col-2">
+          <img src="{{usuario.Foto.url}}" class="img-circle" width="90px" height="85px"> 
+        </div>
+        <div  class="col">
+        <p>Nombre del Usuario:   {{usuario.login}}
+        </p>
+        <p>Nombre: {{usuario.nombre}}
+        </p>
+        <p>Apellidos: {{usuario.apellido}}
+        </p>
+      </div>
+          
+      </div>
+      </div>
+    </a >
+  </div>
+      {% endfor %}
+    </ul>
+
+    {% else %}
+      <p>No hay empresas registradas.</p>
+    {% endif %}
+
+    <div class="pagination ">
+      <span class="step-links mb-5 ">
+          {% if page_obj.has_previous %}
+          <a href="?page=1"> Primera</a>
+          <a href="?page={{ page_obj.previous_page_number }}"> Anterior</a>
+          {% endif %}
+      
+      <span class="current">
+          Pagina {{ page_obj.number }} hasta {{ page_obj.paginator.num_pages }}
+      </span>
+      {% if page_obj.has_next %}
+          <a href="?page={{ page_obj.next_page_number }}"> Siguiente</a>
+          <a href="?page={{ page_obj.paginator.num_pages }}"> Ultima</a>
+          {% endif %}
+      </span>
+  </div>
+{% endblock %}

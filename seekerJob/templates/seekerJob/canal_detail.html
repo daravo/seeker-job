@@ -1,0 +1,170 @@
+
+{% extends "base_generic.html" %}
+
+{% block content %}
+<style>
+#contenedor_ms{
+  height:calc(52vh);
+  margin: 5px 0;
+  overflow-y: auto;
+}
+.div_ms{
+  margin: 1.2rem auto;
+  width: 35%;
+}
+.mensajes_companiero{
+  background-color: #2ab80e;
+}
+#id_mensaje{
+  width: 90%;
+  min-height:70px;
+  max-height:70px;
+  box-sizing: border-box;
+}
+#enviar{
+  width: 150px;
+  cursor: pointer;
+  background-color:#079ec7;
+  outline: none;
+}
+
+
+</style>
+
+{% for usuario in object.canalusuario_set.all  %}
+{% if request.user != usuario.usuario %} 
+<h1>Conversacion con {{ usuario.usuario }} </h1>
+<h2  hidden id="usuario2">{{ usuario.usuario}}</h2>
+{% endif %}
+{% endfor %}
+
+
+<h2>Mensajes</h2>
+<h2 hidden id="canal">{{ object.id }}</h2>
+<h2  hidden id="usuario">{{ request.user.id}}</h2>
+<h2  hidden id="usuario1">{{ request.user}}</h2>
+
+<h2  hidden id="usuario2">{{ usuario}}</h2>
+<div id="contenedor_ms" class="border" >
+ <div v-for="mensaje in mensajes">
+  
+  <div v-if="mensaje.usuario == usuario1" class="div_ms px-3 py-1 rounded   bg-primary me-5
+  ">
+    <small>[[usuario1_user]]</small>
+    <p >[[mensaje.texto]]</p>
+    
+  </div>
+  <div v-else class="div_ms px-3 py-1 rounded   mensajes_companiero ms-5  text-white
+  ">
+    <small>[[usuario2_user]]</small>
+    <p >[[mensaje.texto]]</p>
+   
+  </div>
+</div>
+</div>
+  
+
+  <form id="form_submit" action="{{ request.path }}" method="POST">
+    {% csrf_token %}
+
+  {{ form.as_p }}
+  <button type="submit" id="enviar"  class="btn-light px-3 border-bottom border-2 border-top-0 border-start-0 text-white">
+    Enviar
+</button>
+
+
+  </form>
+  <script src="https://momentjs.com/downloads/moment.js"></script>
+  <script>
+    
+    new Vue({
+      
+      delimiters:["[[", "]]"],
+      el:"#contenedor_ms",
+      data:{mensajes:[],
+      usuario:"",
+      usuario1:"",
+      usuario2:"",
+      usuario1_user:"",
+      usuario2_user:"",
+      
+    },
+    
+    methods:{
+      axios(){
+        axios.get("/seekerJob/api/mensajes/?kword="+this.usuario).then((response) =>(this.mensajes=response.data))
+      },
+      
+      setTimeout(){
+        window.setInterval(this.axios, 5000)
+      },
+      
+    },
+    mounted(){
+      let id=document.getElementById("canal")
+      this.usuario=id.textContent
+      let usuario1=document.getElementById("usuario")
+      this.usuario1=usuario1.textContent
+      let usuario1_us=document.getElementById("usuario1")
+      this.usuario1_user=usuario1_us.textContent
+      let usuario2=document.getElementById("usuario2")
+      this.usuario2_user=usuario2.textContent
+      this.axios()
+      this.setTimeout()
+    }
+      
+    })
+  </script>
+<script>
+  
+  let prueba=""
+  let dato=""
+
+
+setTimeout(function(){
+  let texto=document.getElementById("id_mensaje")
+
+
+},5000)
+window.onload=setTimeout
+
+  
+    
+    
+      
+    
+    MsgForm.addEventListener("submit", (event) =>{
+        event.preventDefault()
+        const targetDate= event.target
+        const formData = new FormData(targetDate)
+        const xhr= new XMLHttpRequest()
+
+        const endpoint = MsgForm.getAttribute("action")
+        const method = MsgForm.getAttribute("method")
+        xhr.open(method, endpoint)
+
+        xhr.responseType ="json"
+        xhr.setRequestHeader("HTTP_X_REQUESTED_WITH","XMLHttpRequest")
+        xhr.setRequestHeader("X-Requested-With","XMLHttpRequest")
+        xhr.onload = () =>{
+            console.log(xhr.status, xhr.response)
+            if(xhr.status===201){
+                const RespuestaData= xhr.response
+                let actualMensajeHtml= msgContainer.innerHTML
+                actualMensajeHtml+= `<div class=""><b>${RespuestaData.username}</b><p>${RespuestaData.mensaje}</p></div>`
+                msgContainer.innerHTML= actualMensajeHtml
+                MsgForm.reset()
+            }else if(xhr.status===400){
+                console.log(xhr.response)
+            }else{
+                alert("Un error ocurrio")
+            }
+        }
+        xhr.send(formData)
+    })
+  
+  
+    
+</script>
+
+{% endblock %}
